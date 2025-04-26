@@ -1,6 +1,9 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 
 const app = express();
+
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/', (req, res) => {
     res.send(`
@@ -13,19 +16,13 @@ app.get('/', (req, res) => {
             </form>
         
         </div>
-        `)
-})
+        `);
+});
+
+
 
 app.post('/', (req, res) => {
-    req.on('data', data => {
-        const parsed = data.toString('utf8').split('&');
-        const formData = {};
-        for (let pair of parsed) {
-            const [key, value] = pair.split('=');
-            formData[key] = value;
-        }
-        console.log(formData);
-    });
+    console.log(req.body)
     res.send('Account created!!!');
 })
 
