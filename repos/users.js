@@ -16,6 +16,28 @@ class UsersRepository {
         }
       
     }
+     async getAll() {
+        //Open the file called this.filename
+        const contents = await fs.promises.readFile(this.filename, { 
+            encoding: 'utf-8'});
+    
+        //parse the contents
+        const data = JSON.parse(contents);
+
+        //Return the parsed data
+        return data;
+
+     }
 }
 
-const repo = new UsersRepository('users.json');
+const test = async () => {
+    const repo = new UsersRepository('users.json');
+
+    const users = await repo.getAll();
+
+    console.log(users)
+
+};
+
+test();
+
