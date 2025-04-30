@@ -1,4 +1,5 @@
 import fs from 'fs';
+import crypto from 'crypto';
 
 class UsersRepository {
     constructor(filename) {
@@ -26,6 +27,8 @@ class UsersRepository {
     }
 
     async create(attrs) {
+        attrs.id = this.randomId();
+
         const records = await this.getAll();
         records.push(attrs)
         
@@ -35,17 +38,31 @@ class UsersRepository {
     async writeAll(records) {
         await fs.promises.writeFile(this.filename, JSON.stringify(records, null, 2));
     }
+
+    randomId() {
+        return crypto.randomBytes(4).toString('hex');
+
+    }
+
+    async getOne(id) {
+        const records = await this.getAll();
+        return records.find(record => record.id === id);
+
+    }
+
+    async delete(id) {
+        const records = await this.getAll();
+        const filterRecords = records.filter(record => record.id !== id);
+        await this.writeAll(filterRecords);
+    }
      
 }
 
 const test = async () => {
     const repo = new UsersRepository('users.json');
 
-     await repo.create({email: 'test@test.com', password:'password'})
-
-    const users = await repo.getAll();
-
-    console.log(users)
+    await repo.delete('2233e36');
+   
 
 };
 
