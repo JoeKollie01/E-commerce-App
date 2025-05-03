@@ -1,6 +1,10 @@
 import fs from 'fs';
-import crypto from 'crypto';
+import { randomBytes, scrypt as _scrypt } from 'crypto';
+import { promisify } from 'util';
 
+
+const scrypt = promisify(_scrypt);
+//const scryptAsync = util.promisify(crypto.scrypt);
 class UsersRepository {
     constructor(filename) {
         if (!filename) {
@@ -29,12 +33,28 @@ class UsersRepository {
     async create(attrs) {
         attrs.id = this.randomId();
 
+
+        const salt = randomBytes(8).toString('hex');
+         const buf = await scrypt(attrs.password, salt, 64); 
+
         const records = await this.getAll();
-        records.push(attrs)
+        const record = {
+            ...attrs,
+            password: `${buf.toString('hex')}.${salt}`
+        };
+        records.push(record);
         
         await this.writeAll(records);
 
-        return attrs;
+        return record;
+    }
+
+    async comparePasswords(saved, supplied) {
+       const [hashed, salt] = saved.split('.');
+       const hashedSuppliedBuf = await scrypt(supplied, salt, 64);
+
+       return hashed === hashedSuppliedBuf.toString('hex');
+
     }
 
     async writeAll(records) {
@@ -42,7 +62,7 @@ class UsersRepository {
     }
 
     randomId() {
-        return crypto.randomBytes(4).toString('hex');
+        return randomBytes(4).toString('hex');
 
     }
 
