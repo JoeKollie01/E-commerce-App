@@ -1,6 +1,8 @@
 import express from 'express';
+import { check, validationResult } from 'express-validator';
 import usersRepo from "../../repos/users.js";
 import signupTemplate from '../../views/admin/auth/signup.js';
+import signinTemplate from '../../views/admin/auth/sign-in.js';
 
 const router = express.Router();
 
@@ -10,8 +12,18 @@ router.get('/signup', (req, res) => {
 
 
 
-router.post('/signup', async (req, res) => {
-    const {email, password, passwordConfirmation} = req.body;
+router.post('/signup', [
+    check('email')
+        .trim()
+        .normalizeEmail()
+        .isEmail(),
+    check('password').trim().isLength({min: 4, max: 20}),
+    check('passwordConfirmation').trim().isLength({min: 4, max: 20})
+] ,
+     async (req, res) => {
+        const errors = validationResult(req);
+        console.log(errors)
+        const {email, password, passwordConfirmation} = req.body;
 
     const existingUser = await usersRepo.getOneBy({ email });
     if (existingUser) {
@@ -38,16 +50,7 @@ router.get('/signout', (req, res) => {
 })
 
 router.get('/sign-in', (req, res) => {
-    res.send(`
-          <div>
-            <form method="POST">
-                <input name="email" placeholder="email" />
-                <input name="password" placeholder="password" />
-                <button>Sign-In</button>           
-            </form>
-        </div>
-
-        `)
+    res.send(signinTemplate())
 });
 
 router.post('/sign-in', async (req, res) => {
