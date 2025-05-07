@@ -3,6 +3,7 @@ import { check, validationResult } from 'express-validator';
 import usersRepo from "../../repos/users.js";
 import signupTemplate from '../../views/admin/auth/signup.js';
 import signinTemplate from '../../views/admin/auth/sign-in.js';
+import { requireEmail, requirePassword, requirePasswordConfirmation } from './validators.js';
 
 const router = express.Router();
 
@@ -13,31 +14,18 @@ router.get('/signup', (req, res) => {
 
 
 router.post('/signup', [
-    check('email')
-        .trim()
-        .normalizeEmail()
-        .isEmail()
-        .withMessage('Must be a valid email')
-        .custom( async (email) => {
-            const existingUser = await usersRepo.getOneBy({ email });
-            if (existingUser) {
-                throw new Error('Email in use');
-            }
-        }),
-    check('password')
-        .trim()
-        .isLength({min: 4, max: 20})
-        .withMessage('Must be between 4 and 20 characters')
-        .custom((passwordConfirmation, { req }) => {
-            if(passwordConfirmation !== req.body.password) {
-                throw new Error('Passwords must match');
-            }
-        }),
-    // check('passwordConfirmation').trim().isLength({min: 4, max: 20})
+
+   requireEmail,
+   requirePassword,
+   requirePasswordConfirmation 
+    
 ] ,
      async (req, res) => {
         const errors = validationResult(req);
-        console.log(errors);
+        
+        if(!errors.isEmpty()) {
+            return res.send(signinTemplate({req, errors}));
+        }
 
         const {email, password, passwordConfirmation} = req.body;
         const user = await usersRepo.create({email, password});
