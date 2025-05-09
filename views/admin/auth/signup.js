@@ -1,12 +1,6 @@
 import layout from "../layout.js";
-
-const getError = (errors, prop) => {
- try {
-    return errors.mapped()[prop].msg
- } catch (err) {
-    return '';
- }
-};
+import { helpers } from "../../helpers.js";
+const { getError} = helpers;
 
 const signupTemplate = ({ req, errors }) => {
     return layout({
@@ -22,9 +16,9 @@ const signupTemplate = ({ req, errors }) => {
                         <input name="email" placeholder="email" />
                         ${getError(errors, 'email')}
                         <input name="password" placeholder="password" />
-                         ${getError(errors, 'password')}
+                         <div style="color: red;">${getError(errors, 'password')}</div>
                         <input name="passwordConfirmation" placeholder="password confirmation" />
-                         ${getError(errors, 'passwordConfirmation')}
+                          <div style="color: red;">${getError(errors, 'passwordConfirmation')}</div>
                         <button>Sign Up</button>           
                     </form>
         

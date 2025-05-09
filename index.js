@@ -5,7 +5,8 @@ import authRouter from './routes/admin/auth.js';
 
 const app = express();
 
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieSession({
     keys: ['asdalf;kd']
 
