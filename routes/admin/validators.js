@@ -1,6 +1,15 @@
 import { check } from 'express-validator';
 import usersRepo from '../../repos/users.js';
 
+
+export const requireTitle = check('title')
+  .trim()
+  .isLength({ min: 5, max: 40})
+
+export const requirePrice = check('price')
+  .trim()
+  .toFloat()
+  .isFloat({ min: 1})
 export const requireEmail = check('email')
   .trim()
   .normalizeEmail()

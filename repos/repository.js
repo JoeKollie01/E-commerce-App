@@ -25,7 +25,7 @@ class Repository {
         records.push(attrs);
         await this.writeAll(records);
 
-        return attrs
+        return attrs;
      }
 
     async getAll() {

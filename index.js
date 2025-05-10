@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
 import authRouter from './routes/admin/auth.js';
-import productRouter from './views/admin/products.js'
+import productRouter from './routes/admin/products.js'
 
 const app = express();
 
