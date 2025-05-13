@@ -1,5 +1,6 @@
 import express from 'express';
-import { check, validationResult } from 'express-validator';
+
+import { handleErrors} from './middlewares.js'
 import usersRepo from "../../repos/users.js";
 import signupTemplate from '../../views/admin/auth/signup.js';
 import signinTemplate from '../../views/admin/auth/sign-in.js';
@@ -27,18 +28,14 @@ router.post('/signup', [
    requirePasswordConfirmation 
     
 ] ,
+    handleErrors(signupTemplate),
      async (req, res) => {
-        const errors = validationResult(req);
-        
-        if(!errors.isEmpty()) {
-            return res.send(signupTemplate({req, errors}));
-        }
-
-        const {email, password, passwordConfirmation} = req.body;
-        const user = await usersRepo.create({email, password});
+     
+       const {email, password} = req.body;
+       const user = await usersRepo.create({email, password});
         
         req.session.userId = user.id;
-        res.send('Account created!!!');
+        res.redirect('/admin/products');
 });
 
 router.get('/signout', (req, res) => {
@@ -55,12 +52,8 @@ router.post('/sign-in', [
     requireValidPasswordForUser
    
 ], 
+    handleErrors(signinTemplate),
     async (req, res) => {
-    const errors = validationResult(req);
-    
-    if(!errors.isEmpty()) {
-        return res.send(signinTemplate({ errors}));
-    }
 
     const { email } = req.body;
 
@@ -69,7 +62,7 @@ router.post('/sign-in', [
 
     req.session.userId = user.id;
 
-    res.send('You are signed in!!!');
+    res.redirect('/admin/products');
 });
 
 export default router;
