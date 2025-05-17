@@ -3,7 +3,7 @@
     "items": [
       {
         "id": "62b582ba",
-        "quantity": 1
+        "quantity": 2
       },
       {
         "id": "9317ff17",
@@ -15,5 +15,18 @@
       }
     ],
     "id": "615f4d27"
+  },
+  {
+    "items": [
+      {
+        "id": "62b582ba",
+        "quantity": 1
+      },
+      {
+        "id": "ac3d7258",
+        "quantity": 1
+      }
+    ],
+    "id": "6f6c0cff"
   }
 ]
