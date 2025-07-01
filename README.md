@@ -74,9 +74,7 @@ Storage: In-memory via custom repositories (repos/*.js)
 
 🧪 Running the App
 ========================
-bash
-Copy
-Edit
+
 # Install dependencies
 npm install
 
